@@ -1,0 +1,14 @@
+---
+# The production version of starter-amazon-flask-server should be the image that has just
+# a main page with the 'Flask Server Website' text.  This version of the website
+# should be available on port 8080 of your server.
+- name: Deploy the production version of your website based on the previous tag of your docker-cloud-test image
+  hosts: localhost
+  become: true
+  vars:
+    flaskServer_environment: production
+    flaskServer_image_version: release-0.0.3
+    flaskServer_host_port: 8080
+    flaskServer_container_port: 5000
+  roles:
+    - flaskServer

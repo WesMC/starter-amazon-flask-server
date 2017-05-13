@@ -1,0 +1,5 @@
+---
+# Here we define variables in a key: value setting
+# that will be used in the unh698 role.
+unh698_image: wmc81294/starter-amazon-flask-server
+unh698_command: python3 flask-server.py

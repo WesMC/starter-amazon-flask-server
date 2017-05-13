@@ -1,0 +1,13 @@
+---
+# The production version of starter-amazon-flask-server should be the image that includes the website with
+# your topic subpage.  This version of the website should be available on port 8081 of your server.
+- name: Deploy the staging version of your website based on the newest tag of your docker-cloud-test image
+  hosts: localhost
+  become: true
+  vars:
+    flaskServer_environment: staging
+    flaskServer_image_version: release-0.1.0
+    flaskServer_host_port: 8081
+    flaskServer_container_port: 5000
+  roles:
+    - flaskServer
