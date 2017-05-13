@@ -1,5 +1,7 @@
 # Automated Configuration with Ansible
 
+With our main work within the flask server, we want to have the ability to configure and spin up docker containers relatively easily. It's more or less a question of 'when' versus 'if' you ever come across a complete server failure
+
 Now that we have a good idea (and documentation) of how to configure a
 server to run our starter flask website within a docker container, we're
 going to take the additional step of automating the configuration
@@ -64,7 +66,7 @@ roles/
 
 What we are mainly using are top level `.yml` files, that use packages that are configured via roles. Within the roles, we setup our docker, and our flask Server. For more information on what these files do, I would direct you to the official [Reference](http://docs.ansible.com/ansible/index.html)
 
-## Steps - Setup
+## Setup
 
 Here, we'll use git as a method for tracking changes to your ansible playbook and deploying it onto your AWS instance.
 
@@ -87,12 +89,7 @@ ansible-playbook configure-host.yml -v --extra-vars "username=xxxxxxx"
 Make changes to the ansible playbook locally, `git push` them to github and
 `git pull` them down on your AWS instance for testing.
 
-Points:
-
-* Branch in github containing the addition of the new ansible folder
-* Commit messages are informative (not "another commit" or "fixed it")
-
-## Steps - Playbooks
+## Playbooks
 
 There are three playbooks included here:
 
@@ -127,7 +124,7 @@ ansible-playbook deploy-website-production.yml -v
 ansible-playbook deploy-website-staging.yml -v
 ```
 
-## Steps - completion
+## Completion and Final Testing
 
 As with any testing, you always want to check to see if it is up and running correctly. Go to your specified URL and then check:
 

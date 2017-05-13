@@ -1,12 +1,12 @@
 import unittest
 
-import flask-server
+import flask_server
 
 
 class FlaskrTestCase(unittest.TestCase):
 
     def setUp(self):
-        self.app = flask-server.app.test_client()
+        self.app = flask_server.app.test_client()
 
     def tearDown(self):
         pass
