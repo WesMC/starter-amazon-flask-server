@@ -1,7 +1,8 @@
 # [Starter Amazon Flask Server](https://github.com/WesMC/starter-amazon-flask-server)
-A starting point for amazon server instances that have git and ansible preconfigured. This starter uses Docker to create flask server instances with different production and staging versions.
 
 ![Starter Amazon Flask Server Logo][logo]
+
+A starting point for amazon server instances that have git and ansible preconfigured. This starter uses Docker to create flask server instances with different production and staging versions.
 
 ## Table of Contents
 - [Flask Server Setup](#flask-server-setup)
@@ -127,4 +128,4 @@ echo "Delete all images"
 docker rmi $(docker images -q)
 ```
 
-[logo]: (/Images/finalLogo.png) "Starter Amazon Flask Server"
+[logo]: https://raw.githubusercontent.com/WesMC/starter-amazon-flask-server/master/Images/finalLogo.png "Starter Amazon Flask Server"
