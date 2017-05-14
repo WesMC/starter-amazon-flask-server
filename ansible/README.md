@@ -76,7 +76,6 @@ Here, we'll use git as a method for tracking changes to your ansible playbook an
 cd ~
 git clone [your starter-amazon-flask-server repo]
 cd [your starter-amazon-flask-server repo]
-git checkout pick-a-branch-name
 ```
 
 2) Run the configure-host.yml playbook (on the AWS server) as-is to verify ansible is setup.
@@ -130,4 +129,3 @@ As with any testing, you always want to check to see if it is up and running cor
 
 * The url for your production instance's main webpage
 * The url for your staging instance's main webpage
-* The url for your github pull request

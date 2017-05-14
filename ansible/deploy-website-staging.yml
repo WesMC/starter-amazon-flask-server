@@ -6,7 +6,7 @@
   become: true
   vars:
     flaskServer_environment: staging
-    flaskServer_image_version: release-0.1.0
+    flaskServer_image_version: latest
     flaskServer_host_port: 8081
     flaskServer_container_port: 5000
   roles:
