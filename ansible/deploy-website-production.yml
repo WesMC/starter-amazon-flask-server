@@ -7,7 +7,7 @@
   become: true
   vars:
     flaskServer_environment: production
-    flaskServer_image_version: release-0.0.3
+    flaskServer_image_version: release-0.0.1
     flaskServer_host_port: 8080
     flaskServer_container_port: 5000
   roles:

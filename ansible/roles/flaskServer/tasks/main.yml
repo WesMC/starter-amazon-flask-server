@@ -11,9 +11,9 @@
 # read a bit on how variable precedence works with ansible
 # http://docs.ansible.com/ansible/playbooks_variables.html#variable-precedence-where-should-i-put-a-variable
 # http://docs.ansible.com/ansible/docker_container_module.html
-- name: Start/Restart the unh698 container
+- name: Start/Restart the flask container
   docker_container:
-    name: "flask-Server-{{ flaskServer_environment }}"
+    name: "Flask-Server-{{ flaskServer_environment }}"
     image: "{{ flaskServer_image }}:{{ flaskServer_image_version }}"
     command: "{{flaskServer_command }}"
     state: started
@@ -28,5 +28,5 @@
 #   http://docs.ansible.com/ansible/uri_module.html
 - name: verify that webserver is running
   uri:
-    url: "http://54.215.211.220:{{ flaskServer_host_port }}"
+    url: "http://54.219.175.24:{{ flaskServer_host_port }}"
     method: GET
