@@ -106,3 +106,7 @@ docker rm $(docker ps -a -q)
 echo "Delete all images"
 docker rmi $(docker images -q)
 ```
+
+#### How not to push to docker cloud
+
+In the process of continuous integration and deployment, we want to relase versions of our server to the public based on whether or not it completely works. This can be achieved easily by setting up a tagging system.
