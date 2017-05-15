@@ -2,7 +2,7 @@
 
 ![Starter Amazon Flask Server Logo][logo]
 
-A starting point for amazon server instances that have git and ansible preconfigured. This starter uses Docker to create flask server instances with different production and staging versions.
+A starting point for Amazon server instances that have Git and Ansible preconfigured. This starter uses Docker to create Flask server instances with different production and staging versions.
 
 ## Table of Contents
 - [Flask Server Setup](#flask-server-setup)
@@ -13,16 +13,20 @@ A starting point for amazon server instances that have git and ansible preconfig
 - [Continuous Integration with Docker Cloud](#continuous-integration-with-docker-cloud)
 - [AWS Instance](#aws-instance)
   - [Getting to AWS](#getting-to-aws)
+- [Ansible](#ansible)
+- [Metrics](#metrics)
+  - [Setup for Flask Server metrics](#setup-for-flask-server-metrics)
 - [References](#references)
 - [Other Useful Commands](#other-useful-commands)
+- [Manual Installation and Configuration](#manual-installation-and-configuration)
 
 ## Flask Server Setup
 
-When we are already to start trying to deploy, this is a great start to double check that we have done everything.
+Before we can do any development on our web app, we need to ensure that we have something to work on. This is a great time to double check that we have done everything correctly for that.
 
 ### Make a Repo for Version Control
 
-This is sort of self explanatory. You need Version Control for any deployable web app in order to achieve CI / CD / CD. For this project, we use Github.
+This is sort of self explanatory. You need Version Control for any deployable web app in order to achieve CI / CD / CD. For this project, we use Github. If you don't know how to use Git, I suggest you go [References](#references) below and do a few of the git exercises.
 
 ### Code for Web App
 
@@ -33,11 +37,11 @@ if __name__ == '__main__':
     app.run()
 ```
 
-sometimes, you might want to run it in debug mode, or set the host IP and Port specifically as such: `app.run(debug=True, host='0.0.0.0', port=5000)`
+sometimes, you might want to run it in debug mode, or set the host IP and Port specifically as such: `app.run(debug=True, host='0.0.0.0', port=5000)`. You might want to simply keep it as `app.run(debug=False, host='0.0.0.0', port=5000)` for later since the default port for Flask servers are 5000. As when we get into Docker and Ansible, this can make things a little easier when we define how we're funneling our traffic.
 
 ### Unit / Acceptance Testing
 
-Once we've written our app, we want to make sure that what the output is, is exactly what we expect it to be. For our app, we use a bash script to run a python3 script that imports a library called `unittest`. Using that, we set it so that it expects, and searches for our content that should be there.
+Once we've written our app, we want to make sure that the output is exactly what we expect it to be. For our app, we use a bash script to run a python3 script that imports a library called `unittest`. Using that, we set it so that it expects, and searches for our content that should be there.
 
 ### Dockerfile and Docker
 
@@ -53,26 +57,9 @@ With docker acting as the helm of how we setup our containers, it makes sense to
 
 First, we need to create a Docker Cloud account, then create a new repository, and within the options, we want to link our github account to it. Once linked, we need to setup rules with building our releases. On the builds tab of your repository on Docker Cloud, hit the 'Configure Automated Builds' button. Hit the plus (+) sign next to 'Build Rules', and for the source type we want to select 'Tag'. For the source, type in `/^[0-9.]+$/`, Docker tag should be `release-{sourceref}`, Dockerfile Location wherever the Dockerfile is located in the project. Build Context should be `/` and both autobuild and caching should be activated.
 
-
-
 ## AWS instance
 
-Using a specified key, we login to our AWS instance using SSH, install docker and git software, clone the master Repo from Github. Once cloned, we want to build our image. Because at the time of this writing we have not achieved CI / CD / CD, we are going to do
-
-```
-sudo docker build -t test .
-```
-
-This translates to "'Build an image with the files in the current directory and tag it with the name 'test'"
-
-Once complete, we are going to use the following command to run a container
-
-```
-sudo docker run -d -p 8080:5000 -t test python3 unh698.py tail -f /dev/null
-```
-
-it states that we want to run the container in a detached state, funnel all traffic from port 8080 of the host OS to the container's port 5000, using the image tagged as 'test', use python3 to run the file unh698.py as soon as it's started, and continuously run. The `tail -f /dev/null` may or may not be necessary. It depends if the application runs continuously runs in the foreground. For more information [check here](http://stackoverflow.com/questions/30209776/docker-container-will-automatically-stop-after-docker-run-d)
-
+Using a specified key, we login to our AWS instance using SSH, clone the master Repo from Github, then run the ansible configuraton files.
 
 ### Getting to AWS
 
@@ -104,6 +91,29 @@ Release:	16.04
 Codename:	xenial
 ```
 
+## Ansible
+
+Ansible is our automated configuration software. It in short lets up setup a server with three simple commands, rather than individually installing everything by hand. This can be quite useful in the world of DevOps. For instance, there happens to be a lot of traffic going through your servers to the point where it's starting to slow down. Now with Ansible, we can spin up new instances in order to have load balancing across our web app. Another example, is if for some reason a server has a hardware crash, then we can easily spin up another instance within seconds, not minutes or hours.
+
+For the documentation of how we have setup Ansible, please see [our other documentation](ansible/README.md) for more information.
+
+## Metrics
+
+One of the last pieces of this puzzle is to setup a means of collecting and analyzing metrics. It can help show where there are unexpected or unexplained errors and slow run times on your pages / URLs. In our case, we have a [Prometheus](https://prometheus.io/) server using various tools and measurements to monitor our app.
+
+In Prometheus, there are 4 types of tools used: Counters, Gauges, Histograms, and Summaries. Counters and Gauges are similar in that they both are single numeric representations, however Counters can only go up, while Gauges can go up and down arbitrarily. Histograms and Summaries are both used for sample observations, however, Summaries also provide a total count of observations, as well as observations over a period of time. Think of Summaries as a collection of Histograms, and you wouldn't be far off in your thinking.
+
+### Setup for Flask Server metrics
+
+Everything is already done for you. But in case you need a reference or want to explore it, the file titled `prometheus_metrics.py` houses all of the logic for our metrics, and is access in our web app through:
+
+```python
+from prometheus_metrics import setup_metrics
+setup_metrics(app)
+```
+
+which is located at the top of `flask_server.py`
+
 ## References
 
 * [Learn Git Branching](http://learngitbranching.js.org/) - Website to learn how to use Git effectively
@@ -112,6 +122,7 @@ Codename:	xenial
 * [Amazon Web Service](https://aws.amazon.com/) - Used to host server
 * [Docker](https://www.docker.com/) - Build containers that run our web app
 * [Docker Cloud](https://cloud.docker.com/) - Used to perform build tests for our Web App
+* [Prometheus](https://prometheus.io/) - Used for measuring metrics across entre app
 
 ## Other Useful Commands
 
@@ -127,5 +138,40 @@ docker rm $(docker ps -a -q)
 echo "Delete all images"
 docker rmi $(docker images -q)
 ```
+
+## Manual Installation and Configuration
+
+If for some reason, we don't want to use ansible to automatically configure our AWS instance, the manual process of bringing this together isn't too difficult. I will be assuming that you can login into your AWS instance, and I will be beginning from that point.
+
+You first need to install Docker. Run the command `apt-get install docker-ce` or `apt-get install docker.io`, with a preference for the former.
+
+Next, we want to clone our repository on Docker Cloud using:
+
+```bash
+# If no version is specified, "latest" is assumed
+docker pull your-docker-username/your-docker-repo-name # appended to end (:latest)
+
+# Specifying a version of the image is done by appending it to the image with a semicolon, and then selecting the version by tag or hash
+docker pull your-docker-username/your-docker-repo-name:release-x.x.x
+```
+
+Once the docker repo is downloaded, change directories into it and then run the following:
+
+```bash
+sudo docker build -t docker-instance-name .
+```
+
+This translates to "'Build an image with the files in the current directory and tag it with the name 'test'"
+
+Once complete, we are going to use the following command to run a container
+
+```bash
+sudo docker run -d -p 8080:5000 -t docker-instance-name python3 flask_server.py
+```
+
+it states that we want to run the container in a detached state, funnel all traffic from port 8080 of the host OS to the container's port 5000, using the image tagged as 'test', use python3 to run the file flask_server.py as soon as it's started.
+
+The container should now be working.
+
 
 [logo]: https://raw.githubusercontent.com/WesMC/starter-amazon-flask-server/master/Images/finalLogo.png "Starter Amazon Flask Server"
